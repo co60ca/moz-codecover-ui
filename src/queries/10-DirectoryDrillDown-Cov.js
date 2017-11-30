@@ -34,7 +34,7 @@ var deepcopy = require("lodash.clonedeep");
  *   may be null.
  */
 
-var directoryDrillDown = { 
+var directoryDrillDown = {
   name: 'Code Coverage by Folder',
   obj:  {
     filter_revision: true,
@@ -76,7 +76,7 @@ var directoryDrillDown = {
       if (!drillDownContext) {
         return this.drilldown_context;
       }
-      return drillDownContext.substr(0, drillDownContext.substr(0, 
+      return drillDownContext.substr(0, drillDownContext.substr(0,
             drillDownContext.length-1).lastIndexOf("/")+1);
     },
     drillDown: function(selectedRow, drillDownContext) {
@@ -86,28 +86,28 @@ var directoryDrillDown = {
 
       // This one is used if we want to remove the path
       drillDownContext += selectedRow[0].val;
-      //drillDownContext = selectedRow[0].val; 
+      //drillDownContext = selectedRow[0].val;
 
       var remote_request_copy = JSON.parse(JSON.stringify(this.remote_request));
-      ClientFilter.setProp(remote_request_copy, 'source.file.name', 
+      ClientFilter.setProp(remote_request_copy, 'source.file.name',
           drillDownContext);
       return {
         context: drillDownContext, remote_request: remote_request_copy
       };
     },
     override: function(query, context) {
-      context = context || "chrome://";
-      
+      context = context || "";
+
       ClientFilter.setProp(query, "start", context.length);
       ClientFilter.setProp(query, "source.file.name", context);
       return new Promise((res, rej) => {
         Client.makeRequest('activedata.allizom.org', query, (data) => {
           var colours = ["#74c274", "#f2b968", "#de6c69"];
-          var levels = [0.9, 0.70, 0.0]; 
+          var levels = [0.9, 0.70, 0.0];
           var headers = [
-            "Directory", 
+            "Directory",
             {title: "Bar", type:"bar", colours: colours, levels: levels},
-            {title: "Covered %", type:"bg", colours: colours, levels: levels}, 
+            {title: "Covered %", type:"bg", colours: colours, levels: levels},
             {title: "Covered Lines", type:"bg", colours: colours, levels: levels}
           ];
 
@@ -118,9 +118,9 @@ var directoryDrillDown = {
             var ucov = row[2];
             var lines = cov + ucov;
             return [
-              dir, 
-              cov/lines, 
-              {text: `${((cov/lines)*100).toPrecision(3)} %`, val: cov/lines}, 
+              dir,
+              cov/lines,
+              {text: `${((cov/lines)*100).toPrecision(3)} %`, val: cov/lines},
               {text: `${cov}/${lines}`, val: cov/lines}
             ];
           });
